@@ -1,56 +1,47 @@
-const features = [
-  {
-    title: 'Auto & Moto',
-    desc: 'Couverture complète pour tous vos véhicules. Assistance 24h/24, 0 franchise, et un tarif juste.',
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.072-.504.936-1.111a13.284 13.284 0 00-2.417-5.136l-1.1-1.375A2.25 2.25 0 0015.64 9.75H12V6.375a1.125 1.125 0 00-1.125-1.125H3.375A1.125 1.125 0 002.25 6.375v9.75" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Habitation',
-    desc: 'Protégez votre logement et vos biens. Formules locataires et propriétaires, sans surprise.',
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Santé',
-    desc: 'Complémentaire santé avec remboursements rapides. Réseau partenaire étendu dans toute la France.',
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Pro & Entreprise',
-    desc: 'Solutions sur mesure pour votre activité, vos locaux et vos collaborateurs. Devis en 3 minutes.',
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
-      </svg>
-    ),
-  },
+import { useLanguage } from '../i18n'
+
+const FEATURE_ICONS = [
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.072-.504.936-1.111a13.284 13.284 0 00-2.417-5.136l-1.1-1.375A2.25 2.25 0 0015.64 9.75H12V6.375a1.125 1.125 0 00-1.125-1.125H3.375A1.125 1.125 0 002.25 6.375v9.75" />
+  </svg>,
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+  </svg>,
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+  </svg>,
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+  </svg>,
 ]
 
-const stats = [
-  { value: '2M+', label: 'Clients protégés' },
-  { value: '98%', label: 'Satisfaction client' },
-  { value: '<2h', label: 'Temps de réponse' },
-  { value: '15 ans', label: "D'expérience" },
-]
-
-const steps = [
-  { num: '01', title: 'Décrivez votre besoin', desc: 'Répondez à quelques questions simples sur votre situation.' },
-  { num: '02', title: 'Comparez les offres', desc: 'Recevez une recommandation personnalisée en 2 minutes.' },
-  { num: '03', title: 'Souscrivez en ligne', desc: 'Signature électronique, couverture immédiate, zéro paperasse.' },
-]
+function LangSwitcher() {
+  const { lang, setLang } = useLanguage()
+  return (
+    <div className="flex items-center gap-1 text-xs font-semibold tracking-widest">
+      <button
+        onClick={() => setLang('fr')}
+        className={`transition-colors duration-200 ${lang === 'fr' ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}
+      >
+        FR
+      </button>
+      <span className="text-gray-300">|</span>
+      <button
+        onClick={() => setLang('en')}
+        className={`transition-colors duration-200 ${lang === 'en' ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}
+      >
+        EN
+      </button>
+    </div>
+  )
+}
 
 export default function LandingPage() {
+  const { t } = useLanguage()
+  const stats = t('stats')
+  const featureItems = t('features.items')
+  const steps = t('howItWorks.steps')
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navbar */}
@@ -64,10 +55,14 @@ export default function LandingPage() {
             <span className="text-gray-900 font-semibold text-xl tracking-tight">Sérénity</span>
           </div>
           <div className="hidden md:flex items-center gap-8">
-            <a href="#offres" className="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors">Nos offres</a>
-            <a href="#fonctionnement" className="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors">Comment ça marche</a>
-            <a href="#" className="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors">À propos</a>
-            <a href="#" className="bg-primary text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-primary-dark transition-colors shadow-sm">Espace client</a>
+            <a href="#offres" className="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors">{t('nav.offers')}</a>
+            <a href="#fonctionnement" className="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors">{t('nav.howItWorks')}</a>
+            <a href="#" className="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors">{t('nav.about')}</a>
+            <LangSwitcher />
+            <a href="#" className="bg-primary text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-primary-dark transition-colors shadow-sm">{t('nav.clientArea')}</a>
+          </div>
+          <div className="md:hidden">
+            <LangSwitcher />
           </div>
         </div>
       </nav>
@@ -80,29 +75,29 @@ export default function LandingPage() {
             <div>
               <span className="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-semibold px-4 py-1.5 rounded-full mb-8">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                Assistant IA disponible 24h/24
+                {t('hero.badge')}
               </span>
               <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-gray-900 leading-tight mb-6">
-                L&apos;assurance<br />
-                qui prend soin<br />
-                <span className="text-primary">de vous.</span>
+                {t('hero.title1')}<br />
+                {t('hero.title2')}<br />
+                <span className="text-primary">{t('hero.title3')}</span>
               </h1>
               <p className="text-gray-500 text-lg font-light leading-relaxed mb-10 max-w-md">
-                Simple, transparente et 100% en ligne. Obtenez votre devis personnalisé en 2 minutes.
+                {t('hero.desc')}
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <a href="#" className="bg-primary text-white px-8 py-4 rounded-xl font-semibold text-center hover:bg-primary-dark transition-all shadow-lg shadow-primary/25 hover:shadow-primary/40">
-                  Obtenir un devis gratuit
+                  {t('hero.cta1')}
                 </a>
                 <a href="#offres" className="border border-gray-200 text-gray-700 px-8 py-4 rounded-xl font-medium text-center hover:border-gray-300 hover:bg-gray-50 transition-all">
-                  Découvrir nos offres
+                  {t('hero.cta2')}
                 </a>
               </div>
             </div>
             <div className="hidden lg:block">
               <img
                 src="https://images.unsplash.com/photo-1511895426328-dc8714191300?w=800&q=80"
-                alt="Famille souriante"
+                alt={t('hero.imgAlt')}
                 className="rounded-3xl shadow-2xl shadow-gray-200/60 w-full h-[420px] object-cover"
               />
             </div>
@@ -128,27 +123,27 @@ export default function LandingPage() {
       <section id="offres" className="py-20 md:py-28">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <span className="text-primary text-sm font-semibold tracking-wide uppercase">Nos solutions</span>
+            <span className="text-primary text-sm font-semibold tracking-wide uppercase">{t('features.label')}</span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-3 mb-4">
-              Une protection pour chaque moment de vie
+              {t('features.title')}
             </h2>
             <p className="text-gray-400 max-w-lg mx-auto font-light">
-              Des formules claires, sans jargon, avec un vrai accompagnement humain.
+              {t('features.desc')}
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((f) => (
+            {featureItems.map((f, i) => (
               <div
                 key={f.title}
                 className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-xl hover:shadow-gray-100/80 hover:-translate-y-1 transition-all duration-300 group"
               >
                 <div className="w-12 h-12 rounded-xl bg-primary-50 text-primary flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                  {f.icon}
+                  {FEATURE_ICONS[i]}
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{f.title}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">{f.desc}</p>
                 <div className="mt-5 flex items-center gap-1 text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  En savoir plus
+                  {t('features.learnMore')}
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                   </svg>
@@ -163,9 +158,9 @@ export default function LandingPage() {
       <section id="fonctionnement" className="py-20 md:py-28 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <span className="text-primary text-sm font-semibold tracking-wide uppercase">Simple et rapide</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-3 mb-4">Comment ça marche ?</h2>
-            <p className="text-gray-400 max-w-lg mx-auto font-light">Souscrivez en 3 étapes, depuis votre canapé.</p>
+            <span className="text-primary text-sm font-semibold tracking-wide uppercase">{t('howItWorks.label')}</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-3 mb-4">{t('howItWorks.title')}</h2>
+            <p className="text-gray-400 max-w-lg mx-auto font-light">{t('howItWorks.desc')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {steps.map((step) => (
@@ -191,13 +186,9 @@ export default function LandingPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
                 </svg>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Une question ? Parlez à notre assistant</h2>
-              <p className="text-white/70 text-lg font-light mb-6">
-                Disponible 24h/24, il répond instantanément sur vos contrats, tarifs et démarches.
-              </p>
-              <p className="text-white/40 text-sm">
-                Cliquez sur la bulle en bas à droite pour essayer
-              </p>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{t('cta.title')}</h2>
+              <p className="text-white/70 text-lg font-light mb-6">{t('cta.desc')}</p>
+              <p className="text-white/40 text-sm">{t('cta.hint')}</p>
             </div>
           </div>
         </div>
@@ -214,7 +205,7 @@ export default function LandingPage() {
               </svg>
               <span className="text-gray-900 font-semibold">Sérénity</span>
             </div>
-            <p className="text-gray-400 text-sm">&copy; 2025 Sérénity. Tous droits réservés. Démo chatbot IA.</p>
+            <p className="text-gray-400 text-sm">{t('footer.copy')}</p>
           </div>
         </div>
       </footer>

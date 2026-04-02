@@ -1,58 +1,22 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { useLanguage } from '../i18n'
 
-const WELCOME_MSG = {
-  from: 'bot',
-  text: 'Bonjour ! Je suis l\'assistant Sérénity. Comment puis-je vous aider ?\n\nVous pouvez me poser des questions sur nos **tarifs**, **déclarer un sinistre** ou **parler à un conseiller**.',
+const PRICING_RE = /prix|tarif|co[uû]t|formule|offre|devis|garantie|combien|mensuel|cotisation|price|cost|plan|quote|formul/i
+const CLAIM_RE = /sinistre|accident|d[eé]clar|d[eé]g[aâ]t|dommage|vol|incendie|casse|constat|claim|damage|theft|fire|broken/i
+const CONTACT_RE = /contact|conseiller|appeler|t[eé]l[eé]phone|email|agence|rendez|rdv|rappel|parler|advisor|call|phone|meeting/i
+const HELLO_RE = /bonjour|salut|hello|coucou|bonsoir|hey|bonne journ/i
+const THANKS_RE = /merci|super|parfait|genial|g[eé]nial|top|excellent|nickel|impec|thank|great|perfect/i
+
+function getBotResponse(text, t) {
+  const lower = text.toLowerCase()
+  if (PRICING_RE.test(lower)) return t('chat.pricingReply')
+  if (CLAIM_RE.test(lower)) return t('chat.claimReply')
+  if (CONTACT_RE.test(lower)) return t('chat.contactReply')
+  if (HELLO_RE.test(lower)) return t('chat.helloReply')
+  if (THANKS_RE.test(lower)) return t('chat.thanksReply')
+  return t('chat.defaultReply')
 }
 
-// --- Priority-based keyword matching ---
-const RESPONSES = [
-  {
-    priority: 1,
-    keywords: /prix|tarif|co[uû]t|formule|offre|devis|garantie|combien|mensuel|cotisation/,
-    reply: 'Voici nos 3 formules Sérénity :\n\n• **Essentielle** — 19,90 €/mois\nResponsabilité civile, assistance 24h/24, protection juridique de base.\n\n• **Confort** — 34,90 €/mois\nTout inclus + bris de glace, vol, incendie, protection juridique étendue.\n\n• **Premium** — 49,90 €/mois\nCouverture maximale, véhicule de remplacement, 0 franchise, valeur à neuf.\n\nSouhaitez-vous un devis personnalisé ? Je peux aussi vous mettre en relation avec un conseiller.',
-  },
-  {
-    priority: 2,
-    keywords: /sinistre|accident|d[eé]clar|d[eé]g[aâ]t|dommage|vol|incendie|casse|constat/,
-    reply: 'Pour déclarer un sinistre, voici la marche à suivre :\n\n1. Rassemblez les pièces nécessaires (constat amiable, photos, témoignages).\n2. Rendez-vous sur **serenity.fr/sinistre** ou appelez le **01 80 42 56 78**.\n3. Remplissez votre déclaration sous 5 jours ouvrés.\n4. Un expert Sérénity vous contactera sous 48h.\n\nBesoin d\'aide pour remplir un constat ? Je suis là pour vous guider.',
-  },
-  {
-    priority: 3,
-    keywords: /contact|conseiller|appeler|t[eé]l[eé]phone|email|agence|rendez|rdv|rappel|parler/,
-    reply: 'Vous pouvez joindre un conseiller Sérénity :\n\n📞 **01 80 42 56 00** — lun-ven 8h-20h, sam 9h-17h\n✉️ contact@serenity.fr\n📍 45 Avenue Hoche, 75008 Paris\n\nVous préférez être rappelé ? Indiquez-moi votre numéro et le créneau qui vous arrange.',
-  },
-  {
-    priority: 4,
-    keywords: /bonjour|salut|hello|coucou|bonsoir|hey|bonne journ/,
-    reply: 'Bonjour et bienvenue chez Sérénity ! Ravi de vous accueillir. 😊\n\nComment puis-je vous aider ? Je peux vous renseigner sur nos **formules**, vous accompagner pour **déclarer un sinistre**, ou vous mettre en relation avec un **conseiller**.',
-  },
-  {
-    priority: 5,
-    keywords: /merci|super|parfait|genial|g[eé]nial|top|excellent|nickel|impec/,
-    reply: 'Avec plaisir ! N\'hésitez pas si vous avez d\'autres questions. Toute l\'équipe Sérénity est là pour vous. Belle journée !',
-  },
-]
-
-const DEFAULT_REPLY = 'Je n\'ai pas trouvé de réponse précise à votre question, mais un conseiller Sérénity peut vous aider.\n\nSouhaitez-vous que je vous mette en relation ? Vous pouvez aussi appeler le **01 80 42 56 00** (lun-ven 8h-20h).'
-
-function getBotResponse(input) {
-  const lower = input.toLowerCase()
-
-  // Find the highest-priority match (lowest priority number wins)
-  let bestMatch = null
-  for (const entry of RESPONSES) {
-    if (entry.keywords.test(lower)) {
-      if (!bestMatch || entry.priority < bestMatch.priority) {
-        bestMatch = entry
-      }
-    }
-  }
-
-  return bestMatch ? bestMatch.reply : DEFAULT_REPLY
-}
-
-// --- UI Components ---
 function ShieldIcon({ className }) {
   return (
     <svg className={className} viewBox="0 0 32 32" fill="none">
@@ -81,7 +45,6 @@ function TypingIndicator() {
 
 function Message({ msg }) {
   const isBot = msg.from === 'bot'
-
   return (
     <div className={`flex items-start gap-2.5 mb-4 ${isBot ? '' : 'flex-row-reverse'}`}>
       {isBot && (
@@ -91,9 +54,7 @@ function Message({ msg }) {
       )}
       <div
         className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-line ${
-          isBot
-            ? 'bg-gray-100 text-gray-700 rounded-tl-sm'
-            : 'bg-primary text-white rounded-tr-sm'
+          isBot ? 'bg-gray-100 text-gray-700 rounded-tl-sm' : 'bg-primary text-white rounded-tr-sm'
         }`}
         dangerouslySetInnerHTML={{
           __html: msg.text
@@ -105,8 +66,8 @@ function Message({ msg }) {
   )
 }
 
-// --- Main Widget ---
 export default function ChatWidget() {
+  const { t, lang } = useLanguage()
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
@@ -123,19 +84,25 @@ export default function ChatWidget() {
     scrollToBottom()
   }, [messages, typing, scrollToBottom])
 
+  // Reset chat on language change
+  useEffect(() => {
+    setMessages([])
+    setHasOpened(false)
+  }, [lang])
+
   useEffect(() => {
     if (open && !hasOpened) {
       setHasOpened(true)
       setTyping(true)
       setTimeout(() => {
         setTyping(false)
-        setMessages([WELCOME_MSG])
+        setMessages([{ from: 'bot', text: t('chat.welcome') }])
       }, 1000)
     }
     if (open) {
       setTimeout(() => inputRef.current?.focus(), 300)
     }
-  }, [open, hasOpened])
+  }, [open, hasOpened, t])
 
   function sendMessage(e) {
     e.preventDefault()
@@ -149,7 +116,7 @@ export default function ChatWidget() {
     const delay = 1000 + Math.random() * 1000
     setTimeout(() => {
       setTyping(false)
-      setMessages((prev) => [...prev, { from: 'bot', text: getBotResponse(text) }])
+      setMessages((prev) => [...prev, { from: 'bot', text: getBotResponse(text, t) }])
     }, delay)
   }
 
@@ -158,9 +125,7 @@ export default function ChatWidget() {
       {/* Chat window */}
       <div
         className={`fixed bottom-24 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-[400px] transition-all duration-300 origin-bottom-right ${
-          open
-            ? 'scale-100 opacity-100 pointer-events-auto'
-            : 'scale-75 opacity-0 pointer-events-none'
+          open ? 'scale-100 opacity-100 pointer-events-auto' : 'scale-75 opacity-0 pointer-events-none'
         }`}
       >
         <div className="bg-white rounded-2xl shadow-2xl shadow-gray-300/40 overflow-hidden flex flex-col border border-gray-100" style={{ height: 'min(540px, calc(100vh - 140px))' }}>
@@ -171,17 +136,17 @@ export default function ChatWidget() {
                 <ShieldIcon className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-white font-semibold text-sm">Sérénity Assistant</h3>
+                <h3 className="text-white font-semibold text-sm">{t('chat.title')}</h3>
                 <div className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-green-400" />
-                  <span className="text-white/70 text-xs">En ligne</span>
+                  <span className="text-white/70 text-xs">{t('chat.online')}</span>
                 </div>
               </div>
             </div>
             <button
               onClick={() => setOpen(false)}
               className="text-white/60 hover:text-white transition-colors p-1"
-              aria-label="Fermer le chat"
+              aria-label={t('chat.closeLabel')}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -205,14 +170,14 @@ export default function ChatWidget() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Posez votre question..."
+              placeholder={t('chat.placeholder')}
               className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/10 transition-all"
             />
             <button
               type="submit"
               disabled={!input.trim()}
               className="bg-primary text-white rounded-xl px-4 py-2.5 hover:bg-primary-dark transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex-shrink-0"
-              aria-label="Envoyer"
+              aria-label="Send"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
@@ -226,7 +191,7 @@ export default function ChatWidget() {
       <button
         onClick={() => setOpen(!open)}
         className="fixed bottom-5 right-4 sm:right-6 z-50 w-14 h-14 rounded-full bg-primary shadow-lg shadow-primary/30 hover:bg-primary-dark transition-all duration-300 flex items-center justify-center hover:scale-110"
-        aria-label="Ouvrir le chat"
+        aria-label={t('chat.openLabel')}
       >
         {open ? (
           <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
@@ -237,8 +202,6 @@ export default function ChatWidget() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
           </svg>
         )}
-
-        {/* Notification badge */}
         {!open && !hasOpened && (
           <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
             <span className="text-white text-xs font-bold">1</span>

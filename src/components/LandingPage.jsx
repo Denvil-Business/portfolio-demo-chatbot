@@ -18,17 +18,16 @@ const FEATURE_ICONS = [
 function LangSwitcher() {
   const { lang, setLang } = useLanguage()
   return (
-    <div className="flex items-center gap-1 text-xs font-semibold tracking-widest">
+    <div className="flex items-center rounded-lg border border-primary/30 overflow-hidden text-xs font-semibold">
       <button
         onClick={() => setLang('fr')}
-        className={`transition-colors duration-200 ${lang === 'fr' ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}
+        className={`px-2.5 py-1 transition-colors duration-200 ${lang === 'fr' ? 'bg-primary text-white' : 'text-gray-500 hover:text-primary'}`}
       >
         FR
       </button>
-      <span className="text-gray-300">|</span>
       <button
         onClick={() => setLang('en')}
-        className={`transition-colors duration-200 ${lang === 'en' ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}
+        className={`px-2.5 py-1 transition-colors duration-200 ${lang === 'en' ? 'bg-primary text-white' : 'text-gray-500 hover:text-primary'}`}
       >
         EN
       </button>
